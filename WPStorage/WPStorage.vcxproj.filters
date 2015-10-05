@@ -1,0 +1,24 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <Filter Include="Resources">
+      <UniqueIdentifier>4d67c0b9-0991-4a1c-8f16-76303246e47e</UniqueIdentifier>
+      <Extensions>rc;ico;cur;bmp;dlg;rc2;rct;bin;rgs;gif;jpg;jpeg;jpe;resx;tga;tiff;tif;png;wav;mfcribbon-ms</Extensions>
+    </Filter>
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="pch.cpp" />
+    <ClCompile Include="StorageProxy.cpp" />
+    <ClCompile Include="StorageFactory.cpp" />
+    <ClCompile Include="StorageFile.cpp" />
+    <ClCompile Include="WPFileStream.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="pch.h" />
+    <ClInclude Include="StorageProxy.h" />
+    <ClInclude Include="StorageFactory.h" />
+    <ClInclude Include="StorageFile.h" />
+    <ClInclude Include="WPFileStream.h" />
+    <ClInclude Include="WPStorageException.h" />
+  </ItemGroup>
+</Project>
