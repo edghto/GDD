@@ -13,11 +13,33 @@ namespace GDD
         private StorageProxy proxy;
         private Stack<WPFile> currentDirectory = new Stack<WPFile>();
 
+        private StorageFolder _CurrentLocationFolder;
+        public StorageFolder CurrentLocationFolder
+        {
+            get
+            {
+                if(_CurrentLocationFolder == null)
+                {
+                    _CurrentLocationFolder = AvailableLocations[0];
+                }
+                return _CurrentLocationFolder;
+            }
+            set
+            {
+                _CurrentLocationFolder = value;
+            }
+        }
         private ObservableCollection<StorageFolder> _AvailableLocations;
         public ObservableCollection<StorageFolder> AvailableLocations
         {
             get
             {
+                if (_AvailableLocations == null)
+                {
+                    _AvailableLocations = new ObservableCollection<StorageFolder>();
+                }
+                _AvailableLocations.Clear();
+                PopulateLocalStorage();
                 return _AvailableLocations;
             }
         }
@@ -35,7 +57,6 @@ namespace GDD
             }
         }
 
-        private StorageFolder CurrentLocationFolder;
         Drive IDrive.CurrentDrive
         {
             get
@@ -49,6 +70,7 @@ namespace GDD
                 if (_AvailableLocations.Contains(drive.storageFolder))
                 {
                     CurrentLocationFolder = drive.storageFolder;
+                    currentDirectory.Clear();
                 }
                 else
                 {
@@ -62,12 +84,6 @@ namespace GDD
         {
             get
             {
-                if (_AvailableLocations == null)
-                {
-                    _AvailableLocations = new ObservableCollection<StorageFolder>();
-                }
-                _AvailableLocations.Clear();
-                PopulateLocalStorage();
                 return CurrentLocationFolder.DisplayName;
             }
         }
@@ -87,12 +103,12 @@ namespace GDD
 
         private void PopulateLocalStorage()
         {
-            CurrentLocationFolder = ApplicationData.Current.LocalFolder;
-            _AvailableLocations.Add(ApplicationData.Current.LocalFolder);
+            _AvailableLocations.Add(KnownFolders.MusicLibrary);
+            _AvailableLocations.Add(KnownFolders.VideosLibrary);
+            _AvailableLocations.Add(KnownFolders.PicturesLibrary);
             var list = KnownFolders.RemovableDevices.GetFoldersAsync().AsTask().Result;
             foreach (var item in list)
             {
-                CurrentLocationFolder = item;
                 _AvailableLocations.Add(item);
             }
         }

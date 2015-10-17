@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GDD.Common;
+using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.IO;
@@ -23,7 +24,11 @@ namespace GDD
     /// </summary>
     public sealed partial class ChooseStorage : Page
     {
+        private NavigationHelper navigationHelper;
+
         private IDrive directory;
+
+        private CommanderViewModel vm;
 
         public ObservableCollection<Drive> StorageCollection { get; private set; }
 
@@ -32,28 +37,59 @@ namespace GDD
             this.InitializeComponent();
             StorageCollection = new ObservableCollection<Drive>();
             DataContext = this;
+
+            this.navigationHelper = new NavigationHelper(this);
+            this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
+            this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
+        }
+        
+        #region NavigationHelper registration
+        public NavigationHelper NavigationHelper
+        {
+            get { return this.navigationHelper; }
         }
 
+        private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
+        {
+        }
 
-        /// <summary>
-        /// Invoked when this page is about to be displayed in a Frame.
-        /// </summary>
-        /// <param name="e">Event data that describes how this page was reached.
-        /// This parameter is typically used to configure the page.</param>
+        private void NavigationHelper_SaveState(object sender, SaveStateEventArgs e)
+        {
+        }
+
         protected override void OnNavigatedTo(NavigationEventArgs e)
         {
-            directory = e.Parameter as IDrive;
-            foreach(var item in directory.Drives)
+            NavigationHelper.OnNavigatedTo(e);
+            vm = App.CommanderVM;
+
+            directory = vm.CurrentActivePanel == 0? vm.LeftPanel : vm.RightPanel;
+            foreach (var item in directory.Drives)
             {
                 StorageCollection.Add(item);
             }
+
         }
+
+        protected override void OnNavigatedFrom(NavigationEventArgs e)
+        {
+            this.navigationHelper.OnNavigatedFrom(e);
+            App.CommanderVM = vm;
+        }
+        #endregion
+
 
         private void ListView_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (e.AddedItems.Count > 0)
-            {
-                directory.CurrentDrive = e.AddedItems[0] as Drive;
+            {   
+                if(vm.CurrentActivePanel == 0)
+                {
+                    vm.LeftPanel.CurrentDrive = e.AddedItems[0] as Drive;
+                }
+                else
+                {
+                    vm.RightPanel.CurrentDrive = e.AddedItems[0] as Drive;
+                }
                 Frame.GoBack();
             }
         }

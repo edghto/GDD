@@ -71,7 +71,7 @@
             <FlipViewItem x:Name="RightHubSection">
                 <Grid>
                     <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,20">
-                        <TextBlock FontSize="17" Text="{Binding RightPanelName}"/>
+                        <TextBlock x:Name="RightDriveName_TextBlock" FontSize="17" Text="{Binding Name}"/>
                         <Image 
                             x:Name="RightInteractiveImage"
                             Source="{Binding IsRightInteractive, Converter={StaticResource isInteractiveImageSourceConverter}}" 

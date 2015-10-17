@@ -5,7 +5,7 @@ using System.Threading.Tasks;
 
 namespace GDD
 {
-    class CommanderViewModel : INotifyPropertyChanged
+    public class CommanderViewModel : INotifyPropertyChanged
     {
         public ObservableCollection<File> LeftPanelCollection { get; set; }
         public ObservableCollection<File> RightPanelCollection { get; set; }
@@ -63,65 +63,59 @@ namespace GDD
             }
         }
 
+        public int CurrentActivePanel { get; set; }
 
-        private IDrive leftPanel = new GDriveDirectory();
-        private IDrive rightPanel = new WPDirectory();
-
-        public IDrive GetLeftPanel()
-        {
-            return leftPanel;
-        }
-
-        public IDrive GetRightPanel()
-        {
-            return rightPanel;
-        }
+        public IDrive LeftPanel { get; set; }
+        public IDrive RightPanel { get; set; }
 
         public CommanderViewModel()
         {
             LeftPanelCollection = new ObservableCollection<File>();
             RightPanelCollection = new ObservableCollection<File>();
 
-            LeftPanelName = leftPanel.Name;
-            IsLeftInteractive = leftPanel.IsInteractive;
-            RightPanelName = rightPanel.Name;
-            IsRightInteractive = rightPanel.IsInteractive;
+            LeftPanel = new GDriveDirectory();
+            RightPanel = new WPDirectory();
+
+            LeftPanelName = LeftPanel.Name;
+            IsLeftInteractive = LeftPanel.IsInteractive;
+            RightPanelName = RightPanel.Name;
+            IsRightInteractive = RightPanel.IsInteractive;
         }
 
         public async Task CopyToLeft(File file)
         {
-            string target = System.IO.Path.Combine(new string[] { leftPanel.GetCurrentDir(), file.Title });
+            string target = System.IO.Path.Combine(new string[] { LeftPanel.GetCurrentDir(), file.Title });
             using (var manager = new CopierManager(
-                leftPanel, file, leftPanel.GetNewFile(file.Title, target)))
+                LeftPanel, file, LeftPanel.GetNewFile(file.Title, target)))
             {
                 await manager.CopyAsync();
-                await refreshListing(LeftPanelCollection, leftPanel);
+                await refreshListing(LeftPanelCollection, LeftPanel);
             }
         }
 
         public async Task CopyToRigth(File file)
         {
-            string target = System.IO.Path.Combine(new string[] { rightPanel.GetCurrentDir(), file.Title });
+            string target = System.IO.Path.Combine(new string[] { RightPanel.GetCurrentDir(), file.Title });
             using (var manager = new CopierManager(
-                rightPanel, file, rightPanel.GetNewFile(file.Title, target)))
+                RightPanel, file, RightPanel.GetNewFile(file.Title, target)))
             {
                 await manager.CopyAsync();
-                await refreshListing(RightPanelCollection, rightPanel);
+                await refreshListing(RightPanelCollection, RightPanel);
             }
         }
 
         public async Task ChangeLeftDir(File file = null)
         {
             if(null != file)
-                leftPanel.ChangeDirectory(file);
-            await refreshListing(LeftPanelCollection, leftPanel);
+                LeftPanel.ChangeDirectory(file);
+            await refreshListing(LeftPanelCollection, LeftPanel);
         }
 
         public async Task ChangeRightDir(File file = null)
         {
             if (null != file)
-                rightPanel.ChangeDirectory(file);
-            await refreshListing(RightPanelCollection, rightPanel);
+                RightPanel.ChangeDirectory(file);
+            await refreshListing(RightPanelCollection, RightPanel);
         }
 
         private async Task refreshListing(ObservableCollection<File> panelListing, IDrive panelModel)

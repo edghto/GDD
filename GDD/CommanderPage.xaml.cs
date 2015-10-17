@@ -18,15 +18,15 @@ namespace GDD
 
         public CommanderPage()
         {
-            vm = new CommanderViewModel();
-            DataContext = vm;
+            vm = App.CommanderVM;
             this.InitializeComponent();
+            DataContext = vm;
+            LeftDriveName_TextBlock.DataContext = vm.LeftPanel;
+            RightDriveName_TextBlock.DataContext = vm.RightPanel;
 
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
             this.navigationHelper.SaveState += this.NavigationHelper_SaveState;
-
-            LeftDriveName_TextBlock.DataContext = vm.GetLeftPanel();
         }
 
 
@@ -117,20 +117,41 @@ namespace GDD
             get { return this.navigationHelper; }
         }
         
-        private void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
+        private async void NavigationHelper_LoadState(object sender, LoadStateEventArgs e)
         {
+            vm = App.CommanderVM;
+
+            DataContext = null;
+            LeftDriveName_TextBlock.DataContext = null;
+            RightDriveName_TextBlock.DataContext = null;
+
+            DataContext = vm;
+            LeftDriveName_TextBlock.DataContext = vm.LeftPanel;
+            RightDriveName_TextBlock.DataContext = vm.RightPanel;
+
+            MainContent.SelectedIndex = vm.CurrentActivePanel;
+
+            await vm.ChangeLeftDir();
+            await vm.ChangeRightDir();
         }
         
         private void NavigationHelper_SaveState(object sender, SaveStateEventArgs e)
         {
+            vm.CurrentActivePanel = MainContent.SelectedIndex;
+            App.CommanderVM = vm;
         }
 
-        protected override async void OnNavigatedTo(NavigationEventArgs e)
+        protected override void OnNavigatedTo(NavigationEventArgs e)
         {
             NavigationHelper.OnNavigatedTo(e);
-            //Frame.BackStack.RemoveAt(Frame.BackStackDepth - 1);
-            await vm.ChangeLeftDir();
-            await vm.ChangeRightDir();
+
+            foreach(var page in Frame.BackStack)
+            {
+                if(page.SourcePageType == typeof(MainPage))
+                {
+                    Frame.BackStack.Remove(page);
+                }
+            }
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
@@ -217,11 +238,11 @@ namespace GDD
             IDrive param = null;
             if(name.CompareTo("LeftInteractiveImage") == 0)
             {
-                param = vm.GetLeftPanel();
+                param = vm.LeftPanel;
             }
             else if(name.CompareTo("RightInteractiveImage") == 0)
             {
-                param = vm.GetRightPanel();
+                param = vm.RightPanel;
             }
 
             Frame.Navigate(typeof(ChooseStorage), param);

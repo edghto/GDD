@@ -136,5 +136,20 @@ namespace GDD
             Window.Current.Activate();
         }
 
+
+        private static CommanderViewModel _commanderViewModel;
+        public static CommanderViewModel CommanderVM
+        {
+            get
+            {
+                if (_commanderViewModel == null)
+                    _commanderViewModel = new CommanderViewModel();
+                return _commanderViewModel;
+            }
+            set
+            {
+                _commanderViewModel = value;
+            }
+        }
     }
 }
