@@ -69,7 +69,7 @@ namespace GDD
         public async Task CopyAsync()
         {
             System.IO.Stream srcStream = StreamFactory.GetStream(srcFile, FileAccess.Read);
-            await Task.FromResult(copiableTo.CopyTo(dstFile, srcStream));
+            await System.Threading.Tasks.Task.Run(async () => { await copiableTo.CopyTo(dstFile, srcStream); });
         }
 
         public void Dispose()
