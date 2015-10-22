@@ -38,15 +38,18 @@ namespace GDD
 
             if(listView.SelectionMode == ListViewSelectionMode.Single)
             {
-                foreach (File file in e.AddedItems)
+                using (ProgressManager pm = new ProgressManager(MainContent, ProgressLayer, ProgressRingHandler))
                 {
-                    if (file.IsDirectory)
+                    foreach (File file in e.AddedItems)
                     {
-                        await vm.ChangeLeftDir(file);
-                    }
-                    else
-                    {
-                        await vm.CopyToRigth(file);
+                        if (file.IsDirectory)
+                        {
+                            await vm.ChangeLeftDir(file);
+                        }
+                        else
+                        {
+                            await vm.CopyToRigth(file);
+                        }
                     }
                 }
             }
@@ -70,15 +73,18 @@ namespace GDD
 
             if (listView.SelectionMode == ListViewSelectionMode.Single)
             {
-                foreach (File file in e.AddedItems)
+                using (ProgressManager pm = new ProgressManager(MainContent, ProgressLayer, ProgressRingHandler))
                 {
-                    if (file.IsDirectory)
+                    foreach (File file in e.AddedItems)
                     {
-                        await vm.ChangeRightDir(file);
-                    }
-                    else
-                    {
-                        await vm.CopyToLeft(file);
+                        if (file.IsDirectory)
+                        {
+                            await vm.ChangeRightDir(file);
+                        }
+                        else
+                        {
+                            await vm.CopyToLeft(file);
+                        }
                     }
                 }
             }
@@ -181,40 +187,47 @@ namespace GDD
         private async void AppBarCopyButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             int idx = MainContent.SelectedIndex; // 0-left, 1-right
-            switch(idx)
-            {
-                case 0:
-                    foreach(File item in LeftPanel.SelectedItems)
-                    {
-                        await vm.CopyToRigth(item);
-                    }
-                    break;
-                case 1:
-                    foreach (File item in RightPanel.SelectedItems)
-                    {
-                        await vm.CopyToLeft(item);
-                    }
-                    break;
-            }
 
-            LeftPanel.SelectedItems.Clear();
-            RightPanel.SelectedItems.Clear();
-            LeftPanel.SelectionMode = ListViewSelectionMode.Single;
-            RightPanel.SelectionMode = ListViewSelectionMode.Single;
-            AppBarButton_Copy.IsEnabled = false;
+            using (ProgressManager pm = new ProgressManager(MainContent, ProgressLayer, ProgressRingHandler))
+            {
+                switch (idx)
+                {
+                    case 0:
+                        foreach (File item in LeftPanel.SelectedItems)
+                        {
+                            await vm.CopyToRigth(item);
+                        }
+                        break;
+                    case 1:
+                        foreach (File item in RightPanel.SelectedItems)
+                        {
+                            await vm.CopyToLeft(item);
+                        }
+                        break;
+                }
+
+                LeftPanel.SelectedItems.Clear();
+                RightPanel.SelectedItems.Clear();
+                LeftPanel.SelectionMode = ListViewSelectionMode.Single;
+                RightPanel.SelectionMode = ListViewSelectionMode.Single;
+                AppBarButton_Copy.IsEnabled = false;
+            }
         }
 
         private async void AppBarRefreshButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
             int idx = MainContent.SelectedIndex; // 0-left, 1-right
-            switch (idx)
+            using (ProgressManager pm = new ProgressManager(MainContent, ProgressLayer, ProgressRingHandler))
             {
-                case 0:
-                    await vm.ChangeLeftDir();
-                    break;
-                case 1:
-                    await vm.ChangeRightDir();
-                    break;
+                switch (idx)
+                {
+                    case 0:
+                        await vm.ChangeLeftDir();
+                        break;
+                    case 1:
+                        await vm.ChangeRightDir();
+                        break;
+                }
             }
         }
 

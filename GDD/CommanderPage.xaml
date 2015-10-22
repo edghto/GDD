@@ -32,7 +32,16 @@
             <TextBlock Text="Google Drive Downloader" Style="{ThemeResource TitleTextBlockStyle}" Margin="0,12,0,0"/>
         </StackPanel>
 
+        <StackPanel x:Name="ProgressLayer" Visibility="Collapsed" Grid.Row="1" VerticalAlignment="Center" >
+            <ProgressRing 
+                x:Name="ProgressRingHandler" 
+                IsActive="False"
+                HorizontalAlignment="Center" />
+            <TextBlock Text="Operation in progress" Style="{ThemeResource TitleTextBlockStyle}" HorizontalAlignment="Center" />
+        </StackPanel>
+        
         <FlipView
+            Visibility="Visible"
             Grid.Row="1" 
             x:Name="MainContent" 
             Margin="19,3,19,0" 
