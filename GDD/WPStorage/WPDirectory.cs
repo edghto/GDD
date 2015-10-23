@@ -185,8 +185,12 @@ namespace GDD
         {
             File dstFile = dst as File;
 
-            var dstWriteStream = new WPFileStream(proxy.OpenWriteStream(dstFile.Id), false, 0);
-            return await new Copier().CopyAsync(dstWriteStream, src);
+            var rawStream = proxy.OpenWriteStream(dstFile.Id);
+            var dstWriteStream = new WPFileStream(rawStream, false, 0);
+            await new Copier().CopyAsync(dstWriteStream, src);
+
+            proxy.CloseStream(rawStream);
+            return true;
         }
     }
 }

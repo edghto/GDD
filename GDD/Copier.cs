@@ -34,7 +34,7 @@ namespace GDD
                     if(ChunkCopied != null)
                         ChunkCopied(size);
                 }
-                await dst.FlushAsync(); // it is necessary hack to copy content to gdrive - check iplementation of GDriveUploadStream
+                await dst.FlushAsync();
             }
             catch(IOException e)
             {
@@ -68,8 +68,10 @@ namespace GDD
 
         public async Task CopyAsync()
         {
-            System.IO.Stream srcStream = StreamFactory.GetStream(srcFile, FileAccess.Read);
-            await System.Threading.Tasks.Task.Run(async () => { await copiableTo.CopyTo(dstFile, srcStream); });
+            using (System.IO.Stream srcStream = StreamFactory.GetStream(srcFile, FileAccess.Read))
+            {
+                await System.Threading.Tasks.Task.Run(async () => { await copiableTo.CopyTo(dstFile, srcStream); });
+            }
         }
 
         public void Dispose()

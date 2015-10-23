@@ -21,7 +21,7 @@ namespace GDD
         }
     }
 
-    public class WPFileStream : Stream
+    public class WPFileStream : Stream, IDisposable
     {
         private WPStorage.WPFileStream streamImpl;
         private bool _CanRead;
@@ -68,6 +68,12 @@ namespace GDD
         public override void Write(byte[] buffer, int offset, int count)
         {
             streamImpl.Write(buffer, count);
+        }
+
+        public new void Dispose()
+        {
+            base.Dispose();
+            new WPStorage.StorageProxy().CloseStream(streamImpl);
         }
     }
 }
