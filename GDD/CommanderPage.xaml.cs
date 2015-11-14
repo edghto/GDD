@@ -229,6 +229,25 @@ namespace GDD
             }
         }
 
+        private async void AppBarFolerInfoButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        { 
+            
+            await new Windows.UI.Popups.MessageDialog(GetDrive().GetCurrentDir()).ShowAsync();
+        }
+
+        private IDrive GetDrive()
+        {
+            if (MainContent == null)
+                return null;
+
+            switch (MainContent.SelectedIndex)
+            {
+                case 0: return vm.LeftPanel;
+                case 1: return vm.RightPanel;
+                default: return null;
+            }
+        }
+
         private ListView GetListView()
         {
             if (MainContent == null)

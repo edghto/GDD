@@ -119,9 +119,9 @@
                 <AppBarButton x:Name="AppBarButton_Copy" IsEnabled="False" Label="Copy" Click="AppBarCopyButton_Click" Icon="Copy" />
                 <AppBarButton Label="Copy" Click="AppBarRefreshButton_Click" Icon="Refresh" />
             </CommandBar.PrimaryCommands>
-            <!--<CommandBar.SecondaryCommands>
-                <AppBarButton x:Uid="AppBarSec" Label="Bar" Command="{Binding SomeCommand}" />
-            </CommandBar.SecondaryCommands>-->
+            <CommandBar.SecondaryCommands>
+                <AppBarButton Label="Folder Info" Click="AppBarFolerInfoButton_Click" Icon="Help" />
+            </CommandBar.SecondaryCommands>
         </CommandBar>
     </Page.BottomAppBar>
     
