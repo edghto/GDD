@@ -20,7 +20,7 @@ namespace GDD
             {
                 if(_CurrentLocationFolder == null)
                 {
-                    _CurrentLocationFolder = AvailableLocations[0];
+                    _CurrentLocationFolder = AvailableLocations[AvailableLocations.Count-1];
                 }
                 return _CurrentLocationFolder;
             }
