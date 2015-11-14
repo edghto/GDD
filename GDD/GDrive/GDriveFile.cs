@@ -41,7 +41,7 @@
         {
             get
             {
-                return (long)item.FileSize;
+                return (item.MimeType == "application/vnd.google-apps.folder" ? 0 : (long)item.FileSize);
             }
         }
     }
