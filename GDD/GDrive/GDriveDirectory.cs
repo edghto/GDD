@@ -73,10 +73,10 @@ namespace GDD
             return currentDirectory.Count > 0 ? currentDirectory.Peek().Id : "root";
         }
 
-        public ObservableCollection<File> GetListing(object dir)
+        public Collection<File> GetListing(object dir)
         {
             string dirStr = dir as string;
-            ObservableCollection<File> listing = new ObservableCollection<File>();
+            Collection<File> listing = new Collection<File>();
 
             if (currentDirectory.Count != 0)
             {
@@ -95,7 +95,7 @@ namespace GDD
             return listing;
         }
         
-        public ObservableCollection<File> GetListing()
+        public Collection<File> GetListing()
         {
             string dirId = "root";
             if(currentDirectory.Count != 0)

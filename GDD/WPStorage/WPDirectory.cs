@@ -140,21 +140,21 @@ namespace GDD
             return dir;
         }
 
-        public ObservableCollection<File> GetListing()
+        public Collection<File> GetListing()
         {
             string dir = GetCurrentDir();
             dir += "\\*";
             return GetListing(dir);
         }
 
-        public ObservableCollection<File> GetListing(object dir)
+        public Collection<File> GetListing(object dir)
         {
-            return GetListingAsync(dir).Result;
+            return GetListingAsync(dir);
         }
 
-        public async Task<ObservableCollection<File>> GetListingAsync(object dir)
+        public Collection<File> GetListingAsync(object dir)
         {
-            ObservableCollection<File> listing = new ObservableCollection<File>();
+            Collection<File> listing = new Collection<File>();
             
             var currentDir = dir as string;
             foreach (var item in proxy.GetFiles(currentDir))

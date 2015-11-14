@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace GDD
 {
@@ -122,7 +123,12 @@ namespace GDD
         {
             panelListing.Clear();
 
-            foreach (var item in panelModel.GetListing())
+            var listing = await Task.FromResult(panelModel.GetListing());  //it will still block current thead which is UI thread
+            var sortedListing = from i in listing
+                                orderby i.IsDirectory descending, i.Title ascending
+                                select i;
+
+            foreach (var item in sortedListing)
                 panelListing.Add(item);
         }
 

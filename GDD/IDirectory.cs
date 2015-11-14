@@ -33,8 +33,8 @@ namespace GDD
 
         bool ChangeDirectory(object newDir);
         string GetCurrentDir();
-        ObservableCollection<File> GetListing(object dir);
-        ObservableCollection<File> GetListing();
+        Collection<File> GetListing(object dir);
+        Collection<File> GetListing();
         File GetNewFile(string title, string target);
         Task<bool> CopyTo(object dst, Stream src);
     }
