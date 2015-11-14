@@ -1,7 +1,5 @@
 ﻿using GDD.Common;
-using System.Collections.ObjectModel;
 using Windows.UI.Xaml.Controls;
-using Windows.UI.Xaml.Data;
 using Windows.UI.Xaml.Navigation;
 using System;
 

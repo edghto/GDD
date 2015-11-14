@@ -96,9 +96,16 @@ namespace GDD
 
         public async Task CopyToRigth(File file)
         {
-            string target = System.IO.Path.Combine(new string[] { RightPanel.GetCurrentDir(), file.Title });
+            //This is workaround for existing files, it only affects windows phone sotrage
+            string title = file.Title;
+            while(RightPanelCollection.FirstOrDefault(f => f.Title == title) != null)
+            {
+                title += "_";
+            }
+
+            string target = System.IO.Path.Combine(new string[] { RightPanel.GetCurrentDir(), title });
             using (var manager = new CopierManager(
-                RightPanel, file, RightPanel.GetNewFile(file.Title, target)))
+                RightPanel, file, RightPanel.GetNewFile(title, target)))
             {
                 await manager.CopyAsync();
                 await refreshListing(RightPanelCollection, RightPanel);
