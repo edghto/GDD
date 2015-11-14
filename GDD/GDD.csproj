@@ -105,6 +105,7 @@
     <Compile Include="GDrive\GDrive.cs" />
     <Compile Include="GDrive\GDriveDirectory.cs" />
     <Compile Include="GDrive\GDriveFile.cs" />
+    <Compile Include="Helpers\SizeSourceConverter.cs" />
     <Compile Include="IDirectory.cs" />
     <Compile Include="Helpers\ImageSourceConverter.cs" />
     <Compile Include="CommanderPage.xaml.cs">

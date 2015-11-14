@@ -12,6 +12,7 @@
     <Page.Resources>
         <local:ImageSourceConverter x:Key="imageSourceConverter"/>
         <local:IsInteractiveImageSourceConverter x:Key="isInteractiveImageSourceConverter"/>
+        <local:SizeSourceConverter x:Key="sizeSourceConverter"/>        
     </Page.Resources>
     
     <Grid x:Name="LayoutRoot">
@@ -70,7 +71,8 @@
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
                                     <Image Source="{Binding IsDirectory, Converter={StaticResource imageSourceConverter}}" Width="20" Height="20" Margin="0,0,3,0"/>
-                                    <TextBlock VerticalAlignment="Center" Text="{Binding Title}"/>
+                                    <TextBlock VerticalAlignment="Center" Width="280" Text="{Binding Title}"/>
+                                    <TextBlock VerticalAlignment="Center" Width="50" Text="{Binding Length, Converter={StaticResource sizeSourceConverter}}"/>
                                 </StackPanel>
                             </DataTemplate>
                         </ListView.ItemTemplate>
@@ -99,7 +101,8 @@
                             <DataTemplate>
                                 <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
                                     <Image Source="{Binding IsDirectory, Converter={StaticResource imageSourceConverter}}" Width="20" Height="20" Margin="0,0,3,0"/>
-                                    <TextBlock VerticalAlignment="Center" Text="{Binding Title}"/>
+                                    <TextBlock VerticalAlignment="Center" Width="280" Text="{Binding Title}"/>
+                                    <TextBlock VerticalAlignment="Center" Width="50" Text="{Binding Length, Converter={StaticResource sizeSourceConverter}}"/>
                                 </StackPanel>
                             </DataTemplate>
                         </ListView.ItemTemplate>
