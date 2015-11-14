@@ -103,13 +103,14 @@ namespace GDD
 
         private void PopulateLocalStorage()
         {
-            _AvailableLocations.Add(KnownFolders.MusicLibrary);
-            _AvailableLocations.Add(KnownFolders.VideosLibrary);
-            _AvailableLocations.Add(KnownFolders.PicturesLibrary);
-            var list = KnownFolders.RemovableDevices.GetFoldersAsync().AsTask().Result;
-            foreach (var item in list)
+            foreach (var storage in new List<StorageFolder>{ KnownFolders.MusicLibrary, KnownFolders.VideosLibrary, KnownFolders.PicturesLibrary, KnownFolders.RemovableDevices })
             {
-                _AvailableLocations.Add(item);
+                var list = storage.GetFoldersAsync().AsTask().Result;
+                foreach (var item in list)
+                {
+                    _AvailableLocations.Add(item);
+                }
+
             }
         }
 
