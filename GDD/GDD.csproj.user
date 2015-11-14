@@ -11,4 +11,7 @@
     <DebugEngines>{92EF0900-2251-11D2-B72E-0000F87572EF}</DebugEngines>
     <EnableUnmanagedDebugging>true</EnableUnmanagedDebugging>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
+    <DeviceId>30F105C9-681E-420b-A277-7C086EAD8A4E</DeviceId>
+  </PropertyGroup>
 </Project>

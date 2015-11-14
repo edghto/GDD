@@ -4,6 +4,8 @@ GDD/obj/*
 GDD/bin/*
 GDD/Assets/client_secrets.json
 WPStorage/Debug
+WPStorage/ARM
+ARM/*
 .vs/*
 *.opensdf
 *.sdf
