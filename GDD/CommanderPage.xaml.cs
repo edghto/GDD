@@ -18,9 +18,6 @@ namespace GDD
         {
             vm = App.CommanderVM;
             this.InitializeComponent();
-            DataContext = vm;
-            LeftDriveName_TextBlock.DataContext = vm.LeftPanel;
-            RightDriveName_TextBlock.DataContext = vm.RightPanel;
 
             this.navigationHelper = new NavigationHelper(this);
             this.navigationHelper.LoadState += this.NavigationHelper_LoadState;
@@ -126,12 +123,12 @@ namespace GDD
             vm = App.CommanderVM;
 
             DataContext = null;
-            LeftDriveName_TextBlock.DataContext = null;
-            RightDriveName_TextBlock.DataContext = null;
+            LeftFlipView.DataContext = null;
+            RightFlipView.DataContext = null;
 
             DataContext = vm;
-            LeftDriveName_TextBlock.DataContext = vm.LeftPanel;
-            RightDriveName_TextBlock.DataContext = vm.RightPanel;
+            LeftFlipView.DataContext = vm.LeftPanel;
+            RightFlipView.DataContext = vm.RightPanel;
 
             MainContent.SelectedIndex = vm.CurrentActivePanel;
 

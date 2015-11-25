@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
 using Windows.Storage;
@@ -8,11 +9,22 @@ using WPStorage;
 
 namespace GDD
 {
-    public class WPDirectory : IDrive
+    public class WPDirectory : IDrive, INotifyPropertyChanged
     {
         private StorageProxy proxy;
         private Stack<WPFile> currentDirectory = new Stack<WPFile>();
 
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void RaisePropertyChanged(string propertyName)
+        {
+            if (this.PropertyChanged != null)
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
+
+
+        #region AvailableLocation Stuff
         private StorageFolder _CurrentLocationFolder;
         public StorageFolder CurrentLocationFolder
         {
@@ -78,7 +90,7 @@ namespace GDD
                 }
             }
         }
-
+        #endregion AvailableLocation Stuff
 
         public string Name
         {
@@ -96,6 +108,22 @@ namespace GDD
             }
         }
 
+        private ObservableCollection<File> _FileCollection;
+        public ObservableCollection<File> FileCollection
+        {
+            get
+            {
+                if (_FileCollection == null)
+                    _FileCollection = new ObservableCollection<File>();
+                return _FileCollection;
+            }
+            set
+            {
+                _FileCollection = value;
+                RaisePropertyChanged("FileCollection");
+            }
+        }
+
         public WPDirectory()
         {
             proxy = new StorageProxy();
@@ -103,6 +131,7 @@ namespace GDD
 
         private void PopulateLocalStorage()
         {
+            _AvailableLocations.Add(ApplicationData.Current.LocalFolder);
             foreach (var storage in new List<StorageFolder>{ KnownFolders.MusicLibrary, KnownFolders.VideosLibrary, KnownFolders.PicturesLibrary, KnownFolders.RemovableDevices })
             {
                 var list = storage.GetFoldersAsync().AsTask().Result;

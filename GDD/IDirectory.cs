@@ -25,12 +25,16 @@ namespace GDD
 
     public interface IDrive
     {
+        /* Memebers for UI Binding */
         string Name { get; }
         bool IsInteractive { get; }
 
-        ObservableCollection<Drive> Drives { get; }
-        Drive CurrentDrive { get; set; }
+        ObservableCollection<File> FileCollection { get; set; }
 
+        ObservableCollection<Drive> Drives { get; } //only if is interactive
+        Drive CurrentDrive { get; set; } //only if is interactive
+
+        /* File management API */
         bool ChangeDirectory(object newDir);
         string GetCurrentDir();
         Collection<File> GetListing(object dir);
@@ -38,4 +42,20 @@ namespace GDD
         File GetNewFile(string title, string target);
         Task<bool> CopyTo(object dst, Stream src);
     }
+
+    //public interface IDrive
+    //{
+    //    string Name { get; }
+    //    bool IsInteractive { get; }
+
+    //    ObservableCollection<Drive> Drives { get; }
+    //    Drive CurrentDrive { get; set; }
+
+    //    bool ChangeDirectory(object newDir);
+    //    string GetCurrentDir();
+    //    Collection<File> GetListing(object dir);
+    //    Collection<File> GetListing();
+    //    File GetNewFile(string title, string target);
+    //    Task<bool> CopyTo(object dst, Stream src);
+    //}
 }

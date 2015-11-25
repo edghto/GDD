@@ -10,9 +10,7 @@
 
 
     <Page.Resources>
-        <local:ImageSourceConverter x:Key="imageSourceConverter"/>
         <local:IsInteractiveImageSourceConverter x:Key="isInteractiveImageSourceConverter"/>
-        <local:SizeSourceConverter x:Key="sizeSourceConverter"/>        
     </Page.Resources>
     
     <Grid x:Name="LayoutRoot">
@@ -42,71 +40,41 @@
         </StackPanel>
         
         <FlipView
-            Visibility="Visible"
-            Grid.Row="1" 
             x:Name="MainContent" 
-            Margin="19,3,19,0" 
-            VerticalAlignment="Stretch"
-            HorizontalAlignment="Stretch"
+            Style="{StaticResource FlipViewStyle}"
             SelectionChanged="MainContent_SelectionChanged">
-            <FlipViewItem x:Name="LeftHubSection">
+            <FlipViewItem x:Name="LeftFlipView">
                 <Grid>
-                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,20">
-                        <TextBlock x:Name="LeftDriveName_TextBlock" FontSize="17" Text="{Binding Name}"/>
+                    <StackPanel Style="{StaticResource FlipViewStackPanelStyle}">
+                        <TextBlock Text="{Binding Name}" Style="{StaticResource DriveNameStyle}" />
                         <Image 
-                            x:Name="LeftInteractiveImage" 
-                            Source="{Binding IsLeftInteractive, Converter={StaticResource isInteractiveImageSourceConverter}}" 
-                            Width="20" Height="20" 
-                            Margin="3,3,0,0" 
-                            Tapped="InteractiveImage_Tapped"
-                            VerticalAlignment="Top" />
+                            Source="{Binding IsInteractive, Converter={StaticResource isInteractiveImageSourceConverter}}" 
+                            Style="{StaticResource InteractiveImageStyle}"
+                            Tapped="InteractiveImage_Tapped" />
                     </StackPanel>
                     <ListView 
                         x:Name="LeftPanel" 
-                        Grid.Row="1"
-                        ItemsSource="{Binding LeftPanelCollection, Mode=OneWay}"
-                        Margin="0,25,0,0"
-                        SelectionChanged="LeftPanel_SelectionChanged">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
-                                    <Image Source="{Binding IsDirectory, Converter={StaticResource imageSourceConverter}}" Width="20" Height="20" Margin="0,0,3,0"/>
-                                    <TextBlock VerticalAlignment="Center" Width="280" Text="{Binding Title}"/>
-                                    <TextBlock VerticalAlignment="Center" Width="50" Text="{Binding Length, Converter={StaticResource sizeSourceConverter}}"/>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
+                        ItemsSource="{Binding FileCollection, Mode=OneWay}" 
+                        Style="{StaticResource PanelListStyle}"
+                        SelectionChanged="LeftPanel_SelectionChanged"
+                        ItemTemplate="{StaticResource PanelListItemTemplate}" />
                 </Grid>
             </FlipViewItem>
-            <FlipViewItem x:Name="RightHubSection">
+            <FlipViewItem x:Name="RightFlipView">
                 <Grid>
-                    <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,20">
-                        <TextBlock x:Name="RightDriveName_TextBlock" FontSize="17" Text="{Binding Name}"/>
+                    <StackPanel Style="{StaticResource FlipViewStackPanelStyle}">
+                        <TextBlock Text="{Binding Name}" Style="{StaticResource DriveNameStyle}" />
                         <Image 
-                            x:Name="RightInteractiveImage"
-                            Source="{Binding IsRightInteractive, Converter={StaticResource isInteractiveImageSourceConverter}}" 
-                            Width="20" Height="20" 
-                            Margin="3,3,0,0" 
-                            Tapped="InteractiveImage_Tapped"
-                            VerticalAlignment="Top" />
+                            Source="{Binding IsInteractive, Converter={StaticResource isInteractiveImageSourceConverter}}" 
+                            Style="{StaticResource InteractiveImageStyle}"
+                            Tapped="InteractiveImage_Tapped" />
                     </StackPanel>
                     <ListView 
                         x:Name="RightPanel" 
-                        Grid.Row="1"
-                        ItemsSource="{Binding RightPanelCollection, Mode=OneWay}" 
-                        Margin="0,25,0,0"
-                        SelectionChanged="RightPanel_SelectionChanged">
-                        <ListView.ItemTemplate>
-                            <DataTemplate>
-                                <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
-                                    <Image Source="{Binding IsDirectory, Converter={StaticResource imageSourceConverter}}" Width="20" Height="20" Margin="0,0,3,0"/>
-                                    <TextBlock VerticalAlignment="Center" Width="280" Text="{Binding Title}"/>
-                                    <TextBlock VerticalAlignment="Center" Width="50" Text="{Binding Length, Converter={StaticResource sizeSourceConverter}}"/>
-                                </StackPanel>
-                            </DataTemplate>
-                        </ListView.ItemTemplate>
-                    </ListView>
+                        ItemsSource="{Binding FileCollection, Mode=OneWay}" 
+                        Style="{StaticResource PanelListStyle}"
+                        SelectionChanged="RightPanel_SelectionChanged"
+                        ItemTemplate="{StaticResource PanelListItemTemplate}"  />
                 </Grid>
             </FlipViewItem>
         </FlipView>
@@ -120,7 +88,7 @@
                 <AppBarButton Label="Copy" Click="AppBarRefreshButton_Click" Icon="Refresh" />
             </CommandBar.PrimaryCommands>
             <CommandBar.SecondaryCommands>
-                <AppBarButton Label="Folder Info" Click="AppBarFolerInfoButton_Click" Icon="Help" />
+                <AppBarButton Label="Folder Info" Click="AppBarFolerInfoButton_Click" />
             </CommandBar.SecondaryCommands>
         </CommandBar>
     </Page.BottomAppBar>

@@ -4,13 +4,22 @@ using System.Collections.ObjectModel;
 using System;
 using System.IO;
 using System.Threading.Tasks;
+using System.ComponentModel;
 
 namespace GDD
 {
-    public class GDriveDirectory : IDrive
+    public class GDriveDirectory : IDrive, INotifyPropertyChanged
     {
         private Stack<GDriveFile> currentDirectory;
 
+        public event PropertyChangedEventHandler PropertyChanged;
+        private void RaisePropertyChanged(string propertyName)
+        {
+            if (this.PropertyChanged != null)
+            {
+                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
 
         public string Name
         {
@@ -46,6 +55,22 @@ namespace GDD
             set
             {
                 throw new NotImplementedException();
+            }
+        }
+
+        private ObservableCollection<File> _FileCollection;
+        public ObservableCollection<File> FileCollection
+        {
+            get
+            {
+                if (_FileCollection == null)
+                    _FileCollection = new ObservableCollection<File>();
+                return _FileCollection;
+            }
+            set
+            {
+                _FileCollection = value;
+                RaisePropertyChanged("FileCollection");
             }
         }
 
