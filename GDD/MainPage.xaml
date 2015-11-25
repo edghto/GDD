@@ -32,7 +32,7 @@
         <Grid Grid.Row="1" x:Name="ContentRoot" Margin="19,9.5,19,0">
             <StackPanel Grid.Row="0" Margin="19,50,0,0">
                 <TextBlock HorizontalAlignment="Center" Name="AuthorizationMessageTextBlock" />
-                <Button Content="Retry" Click="Button_Click" HorizontalAlignment="Center"  />
+                <Button Content="Retry" Click="Button_Click" HorizontalAlignment="Center" Name="RetryButton" />
             </StackPanel>
         </Grid>
     </Grid>

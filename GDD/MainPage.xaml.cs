@@ -36,13 +36,14 @@ namespace GDD
         
         private async void Button_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         {
+            await proxy.InitAsync();
             await PerformAuthorizationAsync();
         }
         
         private async Task PerformAuthorizationAsync()
         {
             Generic.ContinuationManager.Current = this as Generic.IWebAuthenticationContinuable;
-            AuthorizationMessageTextBlock.IsTapEnabled = false;
+            RetryButton.IsEnabled = false;
             AuthorizationMessageTextBlock.Text = "Authorization in progress...";
             if (await proxy.ConnectAsync())
             {
@@ -53,7 +54,7 @@ namespace GDD
             else
             {
                 AuthorizationMessageTextBlock.Text = "Authorization Failed";
-                AuthorizationMessageTextBlock.IsTapEnabled = true;
+                RetryButton.IsEnabled = true;
             }
             Generic.ContinuationManager.Current = null;
         }
@@ -76,7 +77,7 @@ namespace GDD
         {
             NavigationHelper.OnNavigatedTo(e);
             AuthorizationMessageTextBlock.Text = "Authorization in progress...";
-            AuthorizationMessageTextBlock.IsTapEnabled = false;
+            RetryButton.IsEnabled = false;
         }
 
         protected override void OnNavigatedFrom(NavigationEventArgs e)
