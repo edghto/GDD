@@ -93,12 +93,17 @@ namespace GDD
             return true;
         }
 
-        public string GetCurrentDir()
+        public File GetCurrentDir()
         {
-            return currentDirectory.Count > 0 ? currentDirectory.Peek().Id : "root";
+            return currentDirectory.Count > 0 ? currentDirectory.Peek() : new File()
+            {
+                IsDirectory = true,
+                Id = "root",
+                Title = "root"
+            };
         }
 
-        public Collection<File> GetListing(object dir)
+        public async Task<Collection<File>> GetListingAsync(object dir)
         {
             string dirStr = dir as string;
             Collection<File> listing = new Collection<File>();
@@ -112,7 +117,7 @@ namespace GDD
                 });
             }
 
-            foreach (var item in Proxy.GetInstance().GetListing(dirStr))
+            foreach (var item in await Task.FromResult(Proxy.GetInstance().GetListing(dirStr)))
             {
                 listing.Add(new GDriveFile(item));
             }
@@ -120,7 +125,7 @@ namespace GDD
             return listing;
         }
         
-        public Collection<File> GetListing()
+        public async Task<Collection<File>> GetListingAsync()
         {
             string dirId = "root";
             if(currentDirectory.Count != 0)
@@ -128,7 +133,7 @@ namespace GDD
                 dirId = currentDirectory.Peek().Id;
             }
 
-            return GetListing(dirId);
+            return await GetListingAsync(dirId);
         }
 
         private static string GetMimeType(string fileName)

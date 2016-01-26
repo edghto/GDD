@@ -30,58 +30,92 @@ namespace GDD
 
         public async Task CopyToLeft(File file)
         {
-            string target = System.IO.Path.Combine(new string[] { LeftPanel.GetCurrentDir(), file.Title });
-            using (var manager = new CopierManager(
-                LeftPanel, file, LeftPanel.GetNewFile(file.Title, target)))
-            {
-                await manager.CopyAsync();
-                await refreshListing(LeftPanel);
-            }
+            //try {
+                string target = System.IO.Path.Combine(new string[] { LeftPanel.GetCurrentDir().Id, file.Title });
+                using (var manager = new CopierManager(
+                    LeftPanel, file, LeftPanel.GetNewFile(file.Title, target)))
+                {
+                    await manager.CopyAsync();
+                    await refreshListing(LeftPanel);
+                }
+            //}
+            //catch(Exception e)
+            //{
+            //    await ShowAlert(e);
+            //}
+        }
+
+        private async Task ShowAlert(Exception e)
+        {
+            var alert = new Windows.UI.Popups.MessageDialog(e.Message + "\n" + e.StackTrace.ToString());
+            await alert.ShowAsync();
         }
 
         public async Task CopyToRigth(File file)
         {
-            //This is workaround for existing files, it only affects windows phone sotrage
-            string title = file.Title;
-            while(RightPanel.FileCollection.FirstOrDefault(f => f.Title == title) != null)
-            {
-                title += "_";
-            }
+            //try { 
+                string title = file.Title;
 
-            string target = System.IO.Path.Combine(new string[] { RightPanel.GetCurrentDir(), title });
-            using (var manager = new CopierManager(
-                RightPanel, file, RightPanel.GetNewFile(title, target)))
-            {
-                await manager.CopyAsync();
-                await refreshListing(RightPanel);
-            }
+                string target = System.IO.Path.Combine(new string[] { RightPanel.GetCurrentDir().Id, title });
+                using (var manager = new CopierManager(
+                    RightPanel, file, RightPanel.GetNewFile(title, target)))
+                {
+                    await manager.CopyAsync();
+                    await refreshListing(RightPanel);
+                }
+            //}
+            //catch (Exception e)
+            //{
+            //    await ShowAlert(e);
+            //}
         }
 
         public async Task ChangeLeftDir(File file = null)
         {
-            if(null != file)
-                LeftPanel.ChangeDirectory(file);
-            await refreshListing(LeftPanel);
+            //try
+            //{ 
+                if(null != file)
+                    LeftPanel.ChangeDirectory(file);
+                await refreshListing(LeftPanel);
+            //}
+            //catch (Exception e)
+            //{
+            //    await ShowAlert(e);
+            //}
         }
 
         public async Task ChangeRightDir(File file = null)
         {
-            if (null != file)
-                RightPanel.ChangeDirectory(file);
-            await refreshListing(RightPanel);
+            //try
+            //{ 
+                if (null != file)
+                    RightPanel.ChangeDirectory(file);
+                await refreshListing(RightPanel);
+            //}
+            //catch(Exception e)
+            //{
+            //    await ShowAlert(e);
+            //}
         }
 
         private async Task refreshListing(IDrive panelModel)
         {
-            panelModel.FileCollection.Clear();
+            //try
+            //{ 
+                panelModel.FileCollection.Clear();
 
-            var listing = await Task.FromResult(panelModel.GetListing());  //it will still block current thead which is UI thread
-            var sortedListing = from i in listing
-                                orderby i.IsDirectory descending, i.Title ascending
-                                select i;
+                var listing = await panelModel.GetListingAsync();  //it will still block current thead which is UI thread
+                var sortedListing = from i in listing
+                                    orderby i.IsDirectory descending, i.Title ascending
+                                    select i;
 
-            foreach (var item in sortedListing)
-                panelModel.FileCollection.Add(item);
+                foreach (var item in sortedListing)
+                    panelModel.FileCollection.Add(item);
+            //}
+            //catch (Exception e)
+            //{
+            //    await ShowAlert(e);
+            //}
         }
 
     }

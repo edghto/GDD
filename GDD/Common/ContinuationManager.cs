@@ -15,6 +15,7 @@ namespace Generic
     public class ContinuationManager
     {
         internal static IWebAuthenticationContinuable Current;
+        internal static IPickFolderContinuable PickFolderContinuableCurrent;
 
         /// <summary>
         /// Sets the ContinuationArgs for this instance.
@@ -31,6 +32,15 @@ namespace Generic
                         args as WebAuthenticationBrokerContinuationEventArgs);
                 }
             }
+            else if(args.Kind == ActivationKind.PickFolderContinuation)
+            {
+                if(PickFolderContinuableCurrent != null)
+                {
+                    PickFolderContinuableCurrent.ContinueFolderPicking(
+                        args as FolderPickerContinuationEventArgs);
+                }
+
+            }
         }
     }
 
@@ -43,5 +53,10 @@ namespace Generic
         /// </summary>
         /// <param name="args">Activated event args object that contains returned authentication token.</param>
         void ContinueWebAuthentication(WebAuthenticationBrokerContinuationEventArgs args);
+    }
+
+    interface IPickFolderContinuable
+    {
+        void ContinueFolderPicking(FolderPickerContinuationEventArgs args);
     }
 }

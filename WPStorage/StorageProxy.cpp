@@ -21,7 +21,7 @@ namespace WPStorage
 
 		if (hFile == INVALID_HANDLE_VALUE)
 		{
-			return list;
+			throw WPStorageException::GetException(HRESULT_FROM_WIN32(GetLastError()));
 		}
 
 		while (FindNextFile(hFile, &data) != 0 || GetLastError() != ERROR_NO_MORE_FILES)

@@ -2,13 +2,14 @@
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
 using System;
+using Windows.ApplicationModel.Activation;
 
 namespace GDD
 {
     /// <summary>
     /// An empty page that can be used on its own or navigated to within a Frame.
     /// </summary>
-    public sealed partial class CommanderPage : Page
+    public sealed partial class CommanderPage : Page, Generic.IPickFolderContinuable
     {
         private NavigationHelper navigationHelper;
 
@@ -229,7 +230,7 @@ namespace GDD
         private async void AppBarFolerInfoButton_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
         { 
             
-            await new Windows.UI.Popups.MessageDialog(GetDrive().GetCurrentDir()).ShowAsync();
+            await new Windows.UI.Popups.MessageDialog(GetDrive().GetCurrentDir().Id).ShowAsync();
         }
 
         private IDrive GetDrive()
@@ -261,18 +262,37 @@ namespace GDD
 
         private void InteractiveImage_Tapped(object sender, Windows.UI.Xaml.Input.TappedRoutedEventArgs e)
         {
+
             string name = (sender as Image).Name;
-            IDrive param = null;
-            if(name.CompareTo("LeftInteractiveImage") == 0)
+            vm.CurrentActivePanel = MainContent.SelectedIndex;
+            if (name.CompareTo("LeftInteractiveImage") == 0)
             {
-                param = vm.LeftPanel;
             }
-            else if(name.CompareTo("RightInteractiveImage") == 0)
+            else if (name.CompareTo("RightInteractiveImage") == 0)
             {
-                param = vm.RightPanel;
+                var picker = new Windows.Storage.Pickers.FolderPicker();
+                picker.ViewMode = Windows.Storage.Pickers.PickerViewMode.List;
+                picker.FileTypeFilter.Add("*");
+                Generic.ContinuationManager.PickFolderContinuableCurrent =
+                    this as Generic.IPickFolderContinuable;
+                picker.PickFolderAndContinue();
             }
 
-            Frame.Navigate(typeof(ChooseStorage), param);
+        }
+
+        public async void ContinueFolderPicking(FolderPickerContinuationEventArgs args)
+        {
+            Generic.ContinuationManager.PickFolderContinuableCurrent = null;
+            var folder = args.Folder;
+            if (folder == null)
+                return;
+
+            vm.RightPanel.CurrentDrive = new WPDrive(args.Folder);
+
+            if(vm.CurrentActivePanel == 0)
+                await vm.ChangeLeftDir();
+            else if(vm.CurrentActivePanel == 1)
+                await vm.ChangeRightDir();
         }
     }
 }

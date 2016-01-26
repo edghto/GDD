@@ -70,7 +70,8 @@ namespace GDD
         {
             using (System.IO.Stream srcStream = StreamFactory.GetStream(srcFile, FileAccess.Read))
             {
-                await System.Threading.Tasks.Task.Run(async () => { await copiableTo.CopyTo(dstFile, srcStream); });
+                await copiableTo.CopyTo(dstFile, srcStream);
+                //await System.Threading.Tasks.Task.Run(async () => { await copiableTo.CopyTo(dstFile, srcStream); });
             }
         }
 

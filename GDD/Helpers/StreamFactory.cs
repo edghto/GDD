@@ -28,10 +28,16 @@ namespace GDD
                 return new FileStream(file.Id, FileMode.Open, FileAccess.Read);
             }
 #endif
+#if WINAPI_IO_SUPPORT
             else if (file is WPFile)
             {
                 WPStorage.StorageProxy proxy = new WPStorage.StorageProxy();
                 return new WPFileStream(proxy.OpenReadStream(file.Id), true, file.Length);
+            }
+#endif
+            else if(file is WPFile)
+            {
+                return (file as WPFile).fileItem.OpenStreamForReadAsync().Result;
             }
             else
             {

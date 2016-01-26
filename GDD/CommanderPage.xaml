@@ -48,6 +48,7 @@
                     <StackPanel Style="{StaticResource FlipViewStackPanelStyle}">
                         <TextBlock Text="{Binding Name}" Style="{StaticResource DriveNameStyle}" />
                         <Image 
+                            Name="LeftInteractiveImage"
                             Source="{Binding IsInteractive, Converter={StaticResource isInteractiveImageSourceConverter}}" 
                             Style="{StaticResource InteractiveImageStyle}"
                             Tapped="InteractiveImage_Tapped" />
@@ -65,6 +66,7 @@
                     <StackPanel Style="{StaticResource FlipViewStackPanelStyle}">
                         <TextBlock Text="{Binding Name}" Style="{StaticResource DriveNameStyle}" />
                         <Image 
+                            Name="RightInteractiveImage"
                             Source="{Binding IsInteractive, Converter={StaticResource isInteractiveImageSourceConverter}}" 
                             Style="{StaticResource InteractiveImageStyle}"
                             Tapped="InteractiveImage_Tapped" />

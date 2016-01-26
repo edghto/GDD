@@ -5,13 +5,11 @@ using System.ComponentModel;
 using System.IO;
 using System.Threading.Tasks;
 using Windows.Storage;
-using WPStorage;
 
 namespace GDD
 {
     public class WPDirectory : IDrive, INotifyPropertyChanged
     {
-        private StorageProxy proxy;
         private Stack<WPFile> currentDirectory = new Stack<WPFile>();
 
         public event PropertyChangedEventHandler PropertyChanged;
@@ -23,53 +21,7 @@ namespace GDD
             }
         }
 
-
-        #region AvailableLocation Stuff
-        private StorageFolder _CurrentLocationFolder;
-        public StorageFolder CurrentLocationFolder
-        {
-            get
-            {
-                if(_CurrentLocationFolder == null)
-                {
-                    _CurrentLocationFolder = AvailableLocations[AvailableLocations.Count-1];
-                }
-                return _CurrentLocationFolder;
-            }
-            set
-            {
-                _CurrentLocationFolder = value;
-            }
-        }
-        private ObservableCollection<StorageFolder> _AvailableLocations;
-        public ObservableCollection<StorageFolder> AvailableLocations
-        {
-            get
-            {
-                if (_AvailableLocations == null)
-                {
-                    _AvailableLocations = new ObservableCollection<StorageFolder>();
-                }
-                _AvailableLocations.Clear();
-                PopulateLocalStorage();
-                return _AvailableLocations;
-            }
-        }
-
-        ObservableCollection<Drive> IDrive.Drives
-        {
-            get
-            {
-                ObservableCollection<Drive> list = new ObservableCollection<Drive>();
-                foreach (var drive in AvailableLocations)
-                {
-                    list.Add(new WPDrive(drive));
-                }
-                return list;
-            }
-        }
-
-        Drive IDrive.CurrentDrive
+        public Drive CurrentDrive
         {
             get
             {
@@ -79,10 +31,12 @@ namespace GDD
             set
             {
                 WPDrive drive = value as WPDrive;
-                if (_AvailableLocations.Contains(drive.storageFolder))
+                if (drive != null)
                 {
                     CurrentLocationFolder = drive.storageFolder;
                     currentDirectory.Clear();
+                    RaisePropertyChanged("Name");
+                    RaisePropertyChanged("CurrentDrive");
                 }
                 else
                 {
@@ -90,7 +44,6 @@ namespace GDD
                 }
             }
         }
-        #endregion AvailableLocation Stuff
 
         public string Name
         {
@@ -124,23 +77,11 @@ namespace GDD
             }
         }
 
+        public StorageFolder CurrentLocationFolder { get; private set; }
+
         public WPDirectory()
         {
-            proxy = new StorageProxy();
-        }
-
-        private void PopulateLocalStorage()
-        {
-            _AvailableLocations.Add(ApplicationData.Current.LocalFolder);
-            foreach (var storage in new List<StorageFolder>{ KnownFolders.MusicLibrary, KnownFolders.VideosLibrary, KnownFolders.PicturesLibrary, KnownFolders.RemovableDevices })
-            {
-                var list = storage.GetFoldersAsync().AsTask().Result;
-                foreach (var item in list)
-                {
-                    _AvailableLocations.Add(item);
-                }
-
-            }
+            CurrentLocationFolder = ApplicationData.Current.LocalFolder;
         }
 
         public bool ChangeDirectory(object newDir)
@@ -153,48 +94,41 @@ namespace GDD
             }
             else
             {
-                WPFile dir = newDir as WPFile;
+                var dir = newDir as WPFile;
                 dir.Id = GetCurrentDir() + "\\" + dir.Title;
                 currentDirectory.Push(dir);
             }
             return true;
         }
         
-        public string GetCurrentDir()
+        public File GetCurrentDir()
         {
-            string dir = currentDirectory.Count > 0 ? currentDirectory.Peek().Id : CurrentLocationFolder.Path;
-            if(dir.EndsWith("\\"))
-            {
-                dir = dir.Remove(dir.Length - 1);
-            }
-            return dir;
+            return currentDirectory.Count > 0 ? 
+                currentDirectory.Peek() : new WPFile(CurrentLocationFolder);
         }
 
-        public Collection<File> GetListing()
+        public async Task<Collection<File>> GetListingAsync()
         {
-            string dir = GetCurrentDir();
-            dir += "\\*";
-            return GetListing(dir);
+            return await GetListingAsync(GetCurrentDir());
         }
 
-        public Collection<File> GetListing(object dir)
-        {
-            return GetListingAsync(dir);
-        }
-
-        public Collection<File> GetListingAsync(object dir)
+        public async Task<Collection<File>> GetListingAsync(object dir)
         {
             Collection<File> listing = new Collection<File>();
-            
-            var currentDir = dir as string;
-            foreach (var item in proxy.GetFiles(currentDir))
+
+            var currentDir = (dir as WPFile).folderItem;
+            foreach (var item in await currentDir.GetFoldersAsync())
             {
-                WPFile file = new WPFile(item);
-                file.Id = GetCurrentDir() + "\\" + file.Title;
-                listing.Add(file);
+                listing.Add(new WPFile(item));
             }
 
-            if(listing.Count == 0 && currentDirectory.Count != 0)
+            foreach (var item in await currentDir.GetFilesAsync())
+            {
+                var props = await item.GetBasicPropertiesAsync();
+                listing.Add(new WPFile(item, props));
+            }
+
+            if (currentDirectory.Count != 0)
             {
                 listing.Add(new File()
                 {
@@ -208,18 +142,17 @@ namespace GDD
 
         public File GetNewFile(string title, string target)
         {
-            return new File() { Title = title, Id = target, IsDirectory = false };
+            return new TargetWPFile((GetCurrentDir() as WPFile).folderItem, title);
         }
 
         public async Task<bool> CopyTo(object dst, Stream src)
         {
-            File dstFile = dst as File;
+            var dstFile = dst as TargetWPFile;
 
-            var rawStream = proxy.OpenWriteStream(dstFile.Id);
-            var dstWriteStream = new WPFileStream(rawStream, false, 0);
-            await new Copier().CopyAsync(dstWriteStream, src);
-
-            proxy.CloseStream(rawStream);
+            var dstStream = await dstFile.folder.OpenStreamForWriteAsync(
+                dstFile.fileName, CreationCollisionOption.GenerateUniqueName);
+            await new Copier().CopyAsync(dstStream, src);
+            //await src.CopyToAsync(dstStream);
             return true;
         }
     }

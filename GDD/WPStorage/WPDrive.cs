@@ -5,6 +5,7 @@ namespace GDD
     public class WPDrive : Drive
     {
         public StorageFolder storageFolder;
+        private object currentLocationFolder;
 
         public string Name { get { return storageFolder.DisplayName; } }
 
@@ -12,5 +13,11 @@ namespace GDD
         {
             this.storageFolder = storageFolder;
         }
+
+        public WPDrive(object currentLocationFolder)
+        {
+            this.currentLocationFolder = currentLocationFolder;
+        }
     }
+
 }
